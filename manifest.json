@@ -1,0 +1,9 @@
+{
+  "id": "canvas-precomputed-lod",
+  "name": "Canvas Precomputed LOD",
+  "version": "0.1.0",
+  "minAppVersion": "1.6.0",
+  "description": "Display precomputed Canvas image variants according to zoom, on desktop and mobile.",
+  "author": "Canvas Precomputed LOD contributors",
+  "isDesktopOnly": false
+}

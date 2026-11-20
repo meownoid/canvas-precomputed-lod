@@ -1,0 +1,36 @@
+[project]
+name = "obsidian-prepare-lods"
+version = "0.1.0"
+description = "Precompute portable image LODs for Obsidian Canvas."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = [
+    "Pillow>=12.0.0,<14",
+]
+
+[project.scripts]
+obsidian-prepare-lods = "obsidian_prepare_lods.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.basedpyright]
+include = ["src/obsidian_prepare_lods", "scripts", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.40.2",
+    "pre-commit>=4.7.0",
+    "ruff>=0.17.4",
+]

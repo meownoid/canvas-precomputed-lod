@@ -1,0 +1,47 @@
+minimum_pre_commit_version: "4.0.0"
+exclude: ^dist/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: Ruff lint
+        entry: uv run --locked ruff check --fix
+        language: system
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: Ruff format
+        entry: uv run --locked ruff format
+        language: system
+        types_or: [python, pyi]
+      - id: basedpyright
+        name: basedpyright
+        entry: uv run --locked basedpyright
+        language: system
+        files: (\.pyi?$|^pyproject\.toml$|^uv\.lock$)
+        pass_filenames: false
+      - id: biome
+        name: Biome lint (TypeScript / JavaScript)
+        entry: npm exec --no -- biome lint --error-on-warnings
+        language: system
+        files: \.(?:[cm]?[jt]sx?)$
+      - id: typescript
+        name: TypeScript type check
+        entry: npm run typecheck
+        language: system
+        files: (\.[cm]?tsx?$|^tsconfig.*\.json$|^package(?:-lock)?\.json$)
+        pass_filenames: false

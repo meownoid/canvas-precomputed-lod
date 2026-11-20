@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+.venv/
+coverage/
+.DS_Store
+.browser-test/
+*.zip
+*.whl
+*.tar.gz
+.ruff_cache/

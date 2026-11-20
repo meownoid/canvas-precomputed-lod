@@ -1,0 +1,46 @@
+name: Check
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: astral-sh/setup-uv@v9
+        with:
+          python-version: '3.11'
+          enable-cache: true
+      - run: npm ci --ignore-scripts
+      - run: uv sync --locked
+      - name: Build and install Python tool
+        run: |
+          uv build --out-dir "$RUNNER_TEMP/lod-python-dist"
+          export UV_TOOL_DIR="$RUNNER_TEMP/lod-tools"
+          export UV_TOOL_BIN_DIR="$RUNNER_TEMP/lod-tool-bin"
+          uv tool install "$RUNNER_TEMP/lod-python-dist/"*.whl
+          "$UV_TOOL_BIN_DIR/obsidian-prepare-lods" --help
+      - name: Build from source
+        run: |
+          rm -rf dist
+          npm run build
+      - name: Check Python
+        run: |
+          uv run --locked ruff check .
+          uv run --locked ruff format --check .
+          uv run --locked basedpyright
+      - run: npm run lint
+      - run: uv run --locked python -m unittest discover -s tests -p 'test_*.py' -v
+      - run: uv run --locked npm test
+      - name: Install browser engines
+        run: node node_modules/playwright-core/cli.js install --with-deps chromium webkit
+      - run: uv run --locked npm run test:browser
+      - run: uv run --locked python scripts/package.py
